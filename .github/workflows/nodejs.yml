@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Configure MySQL permissions
-        run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password'; FLUSH PRIVILEGES;"     
+        run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword -e "ALTER USER 'root'@'%' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'; FLUSH PRIVILEGES;"    
         
       - name: Teste
         env:
