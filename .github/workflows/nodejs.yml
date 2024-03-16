@@ -22,10 +22,14 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm install
+
+      - name: Configure MySQL permissions
+        run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password'; FLUSH PRIVILEGES;"     
+        
       - name: Teste
         env:
-          MYSQL_USER: root,
-          MYSQL_PASSWORD: password,
-          MYSQL_DATABASE: test,
+          MYSQL_USER: root
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
         run: npm test
 
