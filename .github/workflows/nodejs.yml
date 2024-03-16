@@ -24,7 +24,8 @@ jobs:
         run: npm install
       - name: Teste
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
+          MYSQL_USER: root,
+          MYSQL_PASSWORD: password,
+          MYSQL_DATABASE: test,
         run: npm test
 
