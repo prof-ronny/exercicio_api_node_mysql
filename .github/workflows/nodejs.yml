@@ -14,7 +14,7 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_USER: root
+
           MYSQL_ROOT_PASSWORD: mamae@123
           MYSQL_DATABASE: usersdb
         ports:
@@ -40,7 +40,7 @@ jobs:
         # Name of database to connect to
         DATABASE_NAME: usersdb
         # Username used to connect to database
-        DATABASE_USERNAME: usuario
+        DATABASE_USERNAME: root
         # Password used to connect to database
         DATABASE_PASSWORD: mamae@123
         # Script run on database
