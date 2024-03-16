@@ -1,7 +1,7 @@
 name: CI
 on: push
 jobs:
-  build:
+  Teste:
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -13,18 +13,21 @@ jobs:
             - '3306:3306'
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
+      - name: Configure MySQL permissions
+        run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword -e "ALTER USER 'root'@'%' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'; FLUSH PRIVILEGES;"
+      
       - uses: actions/checkout@v2
-      - run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword test < estrutura.sql
+      
+      - name: Cria Tabela
+        run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword test < estrutura.sql
 
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '18'
+          
       - name: Install dependencies
-        run: npm install
-
-      - name: Configure MySQL permissions
-        run: mysql -h 127.0.0.1 --port 3306 -u root -ppassword -e "ALTER USER 'root'@'%' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'; FLUSH PRIVILEGES;"    
+        run: npm install    
         
       - name: Teste
         env:
