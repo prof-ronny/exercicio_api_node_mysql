@@ -10,8 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-        
-        
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: mamae@123
+          MYSQL_DATABASE: usersdb
+        ports:
+          - 3306:3306
 
     steps:
     - uses: actions/checkout@v2
@@ -19,13 +26,15 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '18'
+    - name: Install dependencies
+      run: npm install
     - name: MySQL Deploy Action
   # You may pin to the exact commit or the version.
   # uses: calxus/mysql-deploy-action@54af3465f56d1b95c27c520f3b84693b3646ab0b
       uses: calxus/mysql-deploy-action@v2
       with:
         # Hostname used to connect to database
-        DATABASE_HOST: usersdb
+        DATABASE_HOST: localhost
         # Port used to connect to database
         DATABASE_PORT: 3306 # optional, default is 3306
         # Name of database to connect to
@@ -36,18 +45,11 @@ jobs:
         DATABASE_PASSWORD: mamae@123
         # Script run on database
         DATABASE_SCRIPT: estrutura.sql
-          
-
-          
-    - name: Install dependencies
-      run: npm install
+    - name: Start MySQL
+      run: sudo /etc/init.d/mysql start
     - name: Install cliente mysql
       run: sudo apt install mysql-client
-    - name: Configure MySQL permissions
-      run: |
-        sudo service mysql start
-        mysql -P 3306 -h 127.0.0.1 -u usuario -pmamae@123 -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'mamae@123'; FLUSH PRIVILEGES;"
     - name: Criar Tabelas
-      run:  sudo mysql -P 3306 -h 127.0.0.1 usersdb -pmamae@123 < estrutura.sql
+      run: sudo mysql usersdb < estrutura.sql
     - name: Run tests
       run: npm test
