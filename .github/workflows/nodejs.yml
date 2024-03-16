@@ -1,35 +1,17 @@
-name: MySQL Workflow
-
-on: [push]
-
+name: CI
+on: push
 jobs:
-  mysql_job:
+  build:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: senha
-          MYSQL_DATABASE: meubanco
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
         ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -u root -psenha"
-          --health-interval=10s
-          --health-timeout=10s
-          --health-retries=10
-
+            - '8888:3306'
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Install MySQL client
-      run: sudo apt-get install mysql-client
-
-    - name: Configure MySQL permissions
-      run: |
-        sudo service mysql start
-        sudo mysql -h 127.0.0.1 -uroot -psenha -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'senha'; FLUSH PRIVILEGES;"
-
-    - name: Execute SQL script
-      run: mysql -h127.0.0.1 -uroot -psenha meubanco < seu_arquivo.sql
+      - uses: actions/checkout@v1
+      - run: mysql -h 127.0.0.1 --port 8888 -u root -ppassword -e 'CREATE DATABASE IF NOT EXISTS test;'
