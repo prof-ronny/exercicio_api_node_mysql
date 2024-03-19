@@ -8,9 +8,9 @@ const port = 3000;
 // Configuração do MySQL
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: process.env.MYSQL_USER, // Usa variáveis de ambiente
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE
+  user: process.env.MYSQL_USER || "root", // Usa variáveis de ambiente
+  password: process.env.MYSQL_PASSWORD || "mamae123",
+  database: process.env.MYSQL_DATABASE || "usersdb"
 
 });
 
@@ -31,8 +31,10 @@ app.post('/users', (req, res) => {
   const INSERT_USER_QUERY = `INSERT INTO users (name, email) VALUES (?, ?)`;
   connection.query(INSERT_USER_QUERY, [name, email], (err, results) => {
     if (err) throw err;
+    console.log(results);
     res.statusCode=201;
-    res.send('Usuário criado com sucesso');
+    
+    res.send({id:results.insertId});
   
   });
 });
@@ -51,6 +53,30 @@ app.get('/users/:id', (req, res) => {
   const SELECT_USER_QUERY = `SELECT * FROM users WHERE id = ?`;
   connection.query(SELECT_USER_QUERY, [userId], (err, results) => {
     if (err) throw err;
+    res.json(results);
+  });
+});
+
+app.put('/users/:id', (req, res) => {
+  const userId = req.params.id;
+
+  const { name, email } = req.body;
+
+  const UPDATE_USER_QUERY = `Update users set name=?, email=? WHERE id = ?`;
+  connection.query(UPDATE_USER_QUERY,  [name, email, userId], (err, results) => {
+    if (err) throw err;
+    res.statusCode=204;
+    res.json(results);
+  });
+});
+
+
+app.delete('/users/:id', (req, res) => {
+  const userId = req.params.id;
+  const DELETE_USER_QUERY = `Delete FROM users WHERE id = ?`;
+  connection.query(DELETE_USER_QUERY, [userId], (err, results) => {
+    if (err) throw err;
+    res.statusCode=204;
     res.json(results);
   });
 });
