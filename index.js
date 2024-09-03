@@ -23,7 +23,7 @@ connection.connect((err) => {
 // Middleware para analisar corpos de solicitação
 app.use(bodyParser.json());
 
-// Rotas CRUD
+// Rotas CRUD teste
 
 // Criar usuário
 app.post('/users', (req, res) => {
